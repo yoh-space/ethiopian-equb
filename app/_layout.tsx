@@ -1,36 +1,30 @@
 import { ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
-import { Stack } from "expo-router";
+import { Stack, type ErrorBoundaryProps } from "expo-router";
 import { StatusBar as ExpoStatusBar } from "expo-status-bar";
-import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ConvexAuthBridge } from "@/auth/ConvexAuthBridge";
 import { AppFeedback } from "@/components/layout/AppFeedback";
+import { StartupScreen } from "@/components/layout/StartupScreen";
 import { useTranslation } from "@/core/i18n";
-import { useSettingsHydration } from "@/hooks/useSettingsHydration";
 import { EqubProvider } from "@/store";
 import { useTheme } from "@/theme";
 
 const clerkPublishableKey = process.env.EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY;
 
-function LoadingScreen() {
-  const { colors } = useTheme();
-  const { t } = useTranslation();
-  return (
-    <View style={[styles.loading, { backgroundColor: colors.brand }]}>
-      <ActivityIndicator size="large" color={colors.accent} />
-      <Text style={{ color: colors.onBrandMuted, fontSize: 13 }}>{t.loading}</Text>
-    </View>
-  );
-}
-
 function AuthenticatedRoutes() {
   const auth = useAuth();
-  const settingsHydrated = useSettingsHydration();
   const { colors } = useTheme();
   const { t } = useTranslation();
 
-  if (!auth.isLoaded || !settingsHydrated) return <LoadingScreen />;
+  if (!auth.isLoaded) {
+    return (
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="index" />
+      </Stack>
+    );
+  }
   if (!auth.isSignedIn) {
     return (
       <Stack screenOptions={{ headerShown: false }}>
@@ -86,15 +80,34 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
+    <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache} navigate={(to) => router.push(to)}>
       <AppProviders />
     </ClerkProvider>
   );
 }
 
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  const { t } = useTranslation();
+  return (
+    <View style={styles.error}>
+      <Text style={styles.errorTitle}>{t.somethingWentWrong}</Text>
+      <Text style={styles.errorMessage}>{error.message}</Text>
+      <Text style={styles.errorHelp}>{t.startupHelp}</Text>
+      <Pressable accessibilityRole="button" onPress={() => { void retry(); }} style={styles.retryButton}>
+        <Text style={styles.retryText}>{t.tryAgain}</Text>
+      </Pressable>
+    </View>
+  );
+}
+
 const styles = StyleSheet.create({
-  loading: { flex: 1, alignItems: "center", justifyContent: "center", gap: 12 },
   configError: { flex: 1, justifyContent: "center", padding: 24, gap: 12, backgroundColor: "#fff" },
   configTitle: { color: "#111827", fontSize: 20, fontWeight: "800" },
   configText: { color: "#4b5563", fontSize: 14, lineHeight: 21 },
+  error: { flex: 1, justifyContent: "center", padding: 24, gap: 12, backgroundColor: "#fff" },
+  errorTitle: { color: "#111827", fontSize: 20, fontWeight: "800" },
+  errorMessage: { color: "#b91c1c", fontSize: 14, lineHeight: 21 },
+  errorHelp: { color: "#4b5563", fontSize: 14, lineHeight: 21 },
+  retryButton: { alignSelf: "flex-start", marginTop: 8, borderRadius: 10, backgroundColor: "#2563eb", paddingHorizontal: 18, paddingVertical: 12 },
+  retryText: { color: "#fff", fontSize: 14, fontWeight: "700" },
 });

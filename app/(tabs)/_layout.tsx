@@ -1,6 +1,7 @@
 import { Redirect, Tabs, type Href } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { StyleSheet } from "react-native";
+import { StartupScreen } from "@/components/layout/StartupScreen";
 import { useTranslation } from "@/core/i18n";
 import { useTheme } from "@/theme";
 import { useEqubStore } from "@/store";
@@ -11,7 +12,7 @@ export default function TabsLayout() {
   const accessChecked = useEqubStore((state) => state.accessChecked);
   const role = useEqubStore((state) => state.role);
 
-  if (!accessChecked) return null;
+  if (!accessChecked) return <StartupScreen message={t.connectingToEqub} detail={t.startupHelp} />;
   if (!role) return <Redirect href={"/access" as Href} />;
 
   return (

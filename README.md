@@ -47,15 +47,19 @@ enforced in Convex functions as well as reflected in the interface.
 
 1. Create a Clerk application. Enable Google OAuth and email verification
    codes. Add the app's `equb` redirect scheme to the Clerk configuration.
-2. Create a Clerk JWT template named `convex` with the application ID `convex`.
-   Copy the Clerk publishable key and issuer domain.
-3. Add these variables to your ignored `.env.local` (preserve any Convex
+2. In Clerk, create a JWT template whose name is exactly `convex` (lowercase).
+   Set its issuer to the Clerk issuer URL, its JWKS endpoint to the matching
+   `/.well-known/jwks.json` URL, and its application ID / audience to `convex`.
+   The template name matters: the app requests a token using `template: "convex"`.
+3. Add the mobile variables to your ignored `.env.local` (preserve any Convex
    deployment settings already there):
    - `EXPO_PUBLIC_CLERK_PUBLISHABLE_KEY`
    - `EXPO_PUBLIC_CONVEX_URL`
-   - `CLERK_JWT_ISSUER_DOMAIN`
-4. Set `CLERK_JWT_ISSUER_DOMAIN` as a Convex deployment environment variable.
-   Then run `npx convex dev` to deploy the schema and functions.
+4. Set `CLERK_JWT_ISSUER_DOMAIN` on the same Convex deployment with the issuer
+   URL from Clerk, for example:
+   `npx convex env set CLERK_JWT_ISSUER_DOMAIN https://your-instance.clerk.accounts.dev`
+   Then run `npx convex dev` to deploy the schema and functions. Set the
+   variable separately for each deployment (dev, preview, or production).
 5. Run `npx expo start` for development. Configure the same mobile public
    variables in the release build environment and rebuild the native app.
 
