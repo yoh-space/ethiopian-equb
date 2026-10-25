@@ -3,6 +3,7 @@ import { useSignIn, useSignUp } from "@clerk/expo/legacy";
 import { router } from "expo-router";
 import { useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { AppButton, AppTextInput, Card } from "@/components/ui";
 import { showToast } from "@/core/feedback";
 import { useTranslation } from "@/core/i18n";
@@ -12,7 +13,7 @@ type Mode = "signIn" | "signUp";
 type Step = "email" | "code";
 
 export default function SignInScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const { t } = useTranslation();
   const { startSSOFlow } = useSSO();
   const signInAuth = useSignIn();
@@ -116,6 +117,7 @@ export default function SignInScreen() {
 
   return (
     <KeyboardAvoidingView style={[styles.safe, { backgroundColor: colors.background }]} behavior={Platform.OS === "ios" ? "padding" : undefined}>
+      <SystemBars style={isDark ? "light" : "dark"} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.brand}>
           <Text style={[styles.brandTitle, { color: colors.brand }]}>EQUB</Text>

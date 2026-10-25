@@ -2,6 +2,7 @@ import { useMutation } from "convex/react";
 import { router } from "expo-router";
 import { useEffect, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { api } from "../../../../convex/_generated/api";
 import { AppButton, AppTextInput, Card } from "@/components/ui";
 import { showToast } from "@/core/feedback";
@@ -10,7 +11,7 @@ import { useEqubStore } from "@/store";
 import { spacing, useTheme } from "@/theme";
 
 export function AccessScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const { t } = useTranslation();
   const accessChecked = useEqubStore((state) => state.accessChecked);
   const role = useEqubStore((state) => state.role);
@@ -63,6 +64,7 @@ export function AccessScreen() {
       style={[styles.safe, { backgroundColor: colors.background }]}
       behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
+      <SystemBars style={isDark ? "light" : "dark"} />
       <ScrollView contentContainerStyle={styles.content} keyboardShouldPersistTaps="handled">
         <View style={styles.heading}>
           <Text style={[styles.brand, { color: colors.primary }]}>EQUB</Text>

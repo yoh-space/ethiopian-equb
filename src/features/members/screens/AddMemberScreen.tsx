@@ -2,6 +2,7 @@ import { Redirect, router } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { SystemBars } from "react-native-edge-to-edge";
 import { AppButton, AppTextInput, Card } from "@/components/ui";
 import { useTranslation } from "@/core/i18n";
 import { showToast } from "@/core/feedback";
@@ -10,7 +11,7 @@ import { spacing, useTheme } from "@/theme";
 
 /** Modal route: /add-member */
 export function AddMemberScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const { t } = useTranslation();
   const role = useEqubStore((s) => s.role);
   const addMember = useEqubStore((s) => s.addMember);
@@ -38,6 +39,7 @@ export function AddMemberScreen() {
 
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={styles.content}>
+      <SystemBars style={isDark ? "light" : "dark"} />
       <View style={[styles.introIcon, { backgroundColor: colors.surfaceAlt }]}>
         <Ionicons name="person-add-outline" size={27} color={colors.primary} />
       </View>

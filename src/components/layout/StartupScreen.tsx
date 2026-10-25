@@ -1,4 +1,5 @@
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
+import { SystemBars } from "react-native-edge-to-edge";
 import { useTranslation } from "@/core/i18n";
 import { useTheme } from "@/theme";
 
@@ -8,11 +9,12 @@ interface StartupScreenProps {
 }
 
 export function StartupScreen({ message, detail }: StartupScreenProps) {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const { t } = useTranslation();
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
+      <SystemBars style={isDark ? "light" : "dark"} />
       <ActivityIndicator size="large" color={colors.primary} />
       <Text accessibilityRole="text" style={[styles.message, { color: colors.text }]}>
         {message ?? t.loading}

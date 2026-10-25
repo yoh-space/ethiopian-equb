@@ -58,9 +58,10 @@ function AuthenticatedRoutes() {
 }
 
 function AppProviders() {
+  const { isDark } = useTheme();
   return (
     <SafeAreaProvider>
-      <SystemBars style={'dark'}/>
+      <SystemBars style={isDark ? "light" : "dark"} />
       <ConvexAuthBridge>
         <AuthenticatedRoutes />
       </ConvexAuthBridge>

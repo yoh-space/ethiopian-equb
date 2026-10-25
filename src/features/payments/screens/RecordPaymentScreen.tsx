@@ -2,6 +2,7 @@ import { router } from "expo-router";
 import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { SystemBars } from "react-native-edge-to-edge";
 import { AppButton, AppTextInput, Card, Notice } from "@/components/ui";
 import { money } from "@/core/engine";
 import { useTranslation } from "@/core/i18n";
@@ -11,7 +12,7 @@ import { radius, spacing, useTheme } from "@/theme";
 
 /** Modal route: /record-payment */
 export function RecordPaymentScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const { t } = useTranslation();
   const data = useEqubStore((s) => s.data);
   const role = useEqubStore((s) => s.role);
@@ -50,6 +51,7 @@ export function RecordPaymentScreen() {
 
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={styles.content}>
+      <SystemBars style={isDark ? "light" : "dark"} />
       <View style={[styles.introIcon, { backgroundColor: colors.surfaceAlt }]}>
         <Ionicons name="card-outline" size={27} color={colors.primary} />
       </View>

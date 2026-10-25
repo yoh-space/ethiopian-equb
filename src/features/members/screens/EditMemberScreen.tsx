@@ -2,6 +2,7 @@ import { Redirect, router, useLocalSearchParams } from "expo-router";
 import { useState } from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { SystemBars } from "react-native-edge-to-edge";
 import { AppButton, AppTextInput, Card } from "@/components/ui";
 import { useTranslation } from "@/core/i18n";
 import { showToast } from "@/core/feedback";
@@ -9,7 +10,7 @@ import { useEqubStore } from "@/store";
 import { spacing, useTheme } from "@/theme";
 
 export function EditMemberScreen() {
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
   const { t } = useTranslation();
   const { memberId } = useLocalSearchParams<{ memberId: string }>();
   const role = useEqubStore((state) => state.role);
@@ -40,6 +41,7 @@ export function EditMemberScreen() {
 
   return (
     <ScrollView style={{ backgroundColor: colors.background }} contentContainerStyle={styles.content}>
+      <SystemBars style={isDark ? "light" : "dark"} />
       <View style={[styles.introIcon, { backgroundColor: colors.surfaceAlt }]}>
         <Ionicons name="person-outline" size={27} color={colors.primary} />
       </View>
