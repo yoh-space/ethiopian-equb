@@ -1,7 +1,7 @@
 import { ClerkProvider, useAuth } from "@clerk/expo";
 import { tokenCache } from "@clerk/expo/token-cache";
 import { Stack, type ErrorBoundaryProps } from "expo-router";
-import { StatusBar as ExpoStatusBar } from "expo-status-bar";
+import {SystemBars} from "react-native-edge-to-edge";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ConvexAuthBridge } from "@/auth/ConvexAuthBridge";
@@ -60,7 +60,7 @@ function AuthenticatedRoutes() {
 function AppProviders() {
   return (
     <SafeAreaProvider>
-      <ExpoStatusBar style="light" />
+      <SystemBars style={'dark'}/>
       <ConvexAuthBridge>
         <AuthenticatedRoutes />
       </ConvexAuthBridge>
@@ -80,7 +80,7 @@ export default function RootLayout() {
   }
 
   return (
-    <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache} navigate={(to) => router.push(to)}>
+    <ClerkProvider publishableKey={clerkPublishableKey} tokenCache={tokenCache}>
       <AppProviders />
     </ClerkProvider>
   );

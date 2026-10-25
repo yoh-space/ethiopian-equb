@@ -1,5 +1,6 @@
 import { useAuth } from "@clerk/expo";
-import { ConvexProviderWithAuth, ConvexReactClient } from "convex/react";
+import { ConvexReactClient } from "convex/react";
+import { ConvexProviderWithClerk } from "convex/react-clerk";
 import type { ReactNode } from "react";
 import { StyleSheet, Text, View } from "react-native";
 
@@ -16,20 +17,11 @@ export function MissingBackendConfiguration() {
 }
 
 export function ConvexAuthBridge({ children }: { children: ReactNode }) {
-  const auth = useAuth();
   if (!convexClient) return <MissingBackendConfiguration />;
   return (
-    <ConvexProviderWithAuth
-      client={convexClient}
-      useAuth={() => ({
-        isLoading: !auth.isLoaded,
-        isAuthenticated: Boolean(auth.isSignedIn),
-        fetchAccessToken: ({ forceRefreshToken }: { forceRefreshToken: boolean }) =>
-          auth.getToken({ template: "convex", skipCache: forceRefreshToken }),
-      })}
-    >
+    <ConvexProviderWithClerk client={convexClient} useAuth={useAuth}>
       {children}
-    </ConvexProviderWithAuth>
+    </ConvexProviderWithClerk>
   );
 }
 

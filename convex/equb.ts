@@ -63,7 +63,7 @@ async function getOwnedEqub(ctx: QueryCtx | MutationCtx, owner: string): Promise
 
 async function getAccess(ctx: QueryCtx | MutationCtx): Promise<AccessContext | null> {
   const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new ConvexError("Sign in is required.");
+  if (!identity) return null;
 
   const ownedEqub = await ctx.db
     .query("equbs")
@@ -101,9 +101,16 @@ async function getAccess(ctx: QueryCtx | MutationCtx): Promise<AccessContext | n
   };
 }
 
-async function requireAdmin(ctx: QueryCtx | MutationCtx): Promise<AccessContext> {
+async function requireAccess(ctx: QueryCtx | MutationCtx): Promise<AccessContext> {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new ConvexError("Sign in is required.");
   const access = await getAccess(ctx);
   if (!access) throw new ConvexError("You are not a member of an Equb.");
+  return access;
+}
+
+async function requireAdmin(ctx: QueryCtx | MutationCtx): Promise<AccessContext> {
+  const access = await requireAccess(ctx);
   if (access.role !== "admin") throw new ConvexError("Administrator access is required.");
   return access;
 }
@@ -230,8 +237,7 @@ async function changeState(
   transform: (state: EqubState) => EqubState,
   memberScope?: string,
 ): Promise<EqubState> {
-  const access = await getAccess(ctx);
-  if (!access) throw new ConvexError("You are not a member of an Equb.");
+  const access = await requireAccess(ctx);
   if (access.role !== "admin" && (!memberScope || access.memberId !== memberScope)) {
     throw new ConvexError("You do not have permission to perform this action.");
   }

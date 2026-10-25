@@ -1,5 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useMutation, useQuery } from "convex/react";
+import { useConvexAuth, useMutation, useQuery } from "convex/react";
 import { create } from "zustand";
 import { useEffect, useLayoutEffect, useRef, useState, type ReactNode } from "react";
 import { ActivityIndicator, StyleSheet, Text, View } from "react-native";
@@ -94,7 +94,8 @@ function withoutDemoSeed(state: EqubState): EqubState {
 }
 
 export function EqubProvider({ children }: { children: ReactNode }) {
-  const result = useQuery(api.equb.getState, {});
+  const { isAuthenticated } = useConvexAuth();
+  const result = useQuery(api.equb.getState, isAuthenticated ? {} : "skip");
   const importDeviceState = useMutation(api.equb.importDeviceState);
   const addMember = useMutation(api.equb.addMember);
   const updateMember = useMutation(api.equb.updateMember);
